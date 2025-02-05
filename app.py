@@ -41,11 +41,13 @@ def upload_file():
     
     return redirect_to_search(file_path, search_engine)
 
+import requests
+
 def redirect_to_search(image_path, engine):
     if engine == "google":
-        return redirect(f"https://www.google.com/searchbyimage?image_url={image_path}")
+        return redirect(f"https://lens.google.com/uploadbyurl?url={image_path}")
     elif engine == "bing":
-        return redirect(f"https://www.bing.com/images/search?q=imgurl:{image_path}&view=detailv2")
+        return redirect(f"https://www.bing.com/images/search?view=detailv2&iss=sbi&form=SBIVSP&sbisrc=UrlPaste&imgurl={image_path}")
     elif engine == "yandex":
         return redirect(f"https://yandex.com/images/search?rpt=imageview&url={image_path}")
     elif engine == "tineye":
