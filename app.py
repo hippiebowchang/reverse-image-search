@@ -71,11 +71,16 @@ def redirect_to_search(image_path, engine):
     elif engine == "tineye":
         return redirect(f"https://www.tineye.com/search/?url={image_url}")
     elif engine == "reddit":
-        return redirect(f"https://www.google.com/searchbyimage?image_url={image_url}&as_sitesearch=reddit.com")
+        return redirect(f"https://www.google.com/search?q=site:reddit.com \"{image_url}\"")
     elif engine == "twitter":
-        return redirect(f"https://www.google.com/searchbyimage?image_url={image_url}&as_sitesearch=twitter.com")
+        return redirect(f"https://www.google.com/search?q=site:twitter.com \"{image_url}\"")
+    elif engine == "instagram":
+        return redirect(f"https://www.google.com/search?q=site:instagram.com \"{image_url}\"")
+    elif engine == "facebook":
+        return redirect(f"https://www.google.com/search?q=site:facebook.com \"{image_url}\"")
+    elif engine == "facecheck":
+        return redirect(f"https://facecheck.id/search?url={image_url}")
     else:
         return "Invalid search engine selected"
-
 if __name__ == '__main__':
     app.run(debug=True)
