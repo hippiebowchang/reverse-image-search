@@ -1,12 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reverse Image & Video Search</title>
 </head>
 <body>
     <h2>Upload an Image or Video</h2>
+    
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required>
+        <input type="file" name="file" required><br><br>
+
+        <label for="search_engine">Choose a Search Engine:</label>
+        <select name="search_engine" id="search_engine" required>
+            <option value="google">Google</option>
+            <option value="bing">Bing</option>
+            <option value="yandex">Yandex</option>
+            <option value="tineye">TinEye</option>
+            <option value="pimeyes">PimEyes (for faces)</option>
+        </select>
+        <br><br>
+
         <button type="submit">Search</button>
     </form>
 </body>
