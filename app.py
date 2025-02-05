@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify, render_template
-import requests
+from flask import Flask, request, render_template, redirect, url_for
 import os
 import cv2
 import numpy as np
@@ -9,12 +8,16 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-def reverse_image_search(image_path):
-    search_url = "https://www.google.com/searchbyimage/upload"
-    with open(image_path, 'rb') as img:
-        files = {'encoded_image': img, 'image_content': ''}
-        response = requests.post(search_url, files=files, allow_redirects=False)
-    return response.headers.get('Location')
+def extract_keyframe(video_path):
+    cap = cv2.VideoCapture(video_path)
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap.set(cv2.CAP_PROP_POS_FRAMES, frame_count // 2)  # Get middle frame
+    ret, frame = cap.read()
+    if ret:
+        keyframe_path = video_path.rsplit('.', 1)[0] + "_frame.jpg"
+        cv2.imwrite(keyframe_path, frame)
+        return keyframe_path
+    return None
 
 @app.route('/')
 def index():
@@ -23,17 +26,34 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return jsonify({"error": "No file uploaded"})
+        return "No file uploaded"
     file = request.files['file']
     if file.filename == '':
-        return jsonify({"error": "No selected file"})
+        return "No selected file"
     
+    search_engine = request.form.get('search_engine')
     filename = secure_filename(file.filename)
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
+    
+    if file.filename.lower().endswith(('.mp4', '.avi', '.mov', '.mkv')):
+        file_path = extract_keyframe(file_path) or file_path
+    
+    return redirect_to_search(file_path, search_engine)
 
-    result_url = reverse_image_search(file_path)
-    return jsonify({"image_result": result_url})
+def redirect_to_search(image_path, engine):
+    if engine == "google":
+        return redirect(f"https://www.google.com/searchbyimage?image_url={image_path}")
+    elif engine == "bing":
+        return redirect(f"https://www.bing.com/images/search?q=imgurl:{image_path}&view=detailv2")
+    elif engine == "yandex":
+        return redirect(f"https://yandex.com/images/search?rpt=imageview&url={image_path}")
+    elif engine == "tineye":
+        return redirect(f"https://www.tineye.com/search/?url={image_path}")
+    elif engine == "pimeyes":
+        return redirect(f"https://pimeyes.com/en/?uploaded_image={image_path}")
+    else:
+        return "Invalid search engine selected"
 
 if __name__ == '__main__':
     app.run(debug=True)
