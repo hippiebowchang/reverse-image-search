@@ -43,17 +43,36 @@ def upload_file():
 
 import requests
 
+IMGUR_CLIENT_ID = "YOUR_IMGUR_CLIENT_ID"  # Replace with your Imgur API Client ID
+
+def upload_to_imgur(image_path):
+    headers = {"Authorization": f"Client-ID {IMGUR_CLIENT_ID}"}
+    with open(image_path, "rb") as image_file:
+        response = requests.post(
+            "https://api.imgur.com/3/image",
+            headers=headers,
+            files={"image": image_file},
+        )
+    if response.status_code == 200:
+        return response.json()["data"]["link"]
+    else:
+        return None
+
 def redirect_to_search(image_path, engine):
+    image_url = upload_to_imgur(image_path)
+    if not image_url:
+        return "Error uploading image. Try again."
+
     if engine == "google":
-        return redirect(f"https://lens.google.com/uploadbyurl?url={image_path}")
+        return redirect(f"https://lens.google.com/uploadbyurl?url={image_url}")
     elif engine == "bing":
-        return redirect(f"https://www.bing.com/images/search?view=detailv2&iss=sbi&form=SBIVSP&sbisrc=UrlPaste&imgurl={image_path}")
+        return redirect(f"https://www.bing.com/images/search?view=detailv2&iss=sbi&form=SBIVSP&sbisrc=UrlPaste&imgurl={image_url}")
     elif engine == "yandex":
-        return redirect(f"https://yandex.com/images/search?rpt=imageview&url={image_path}")
+        return redirect(f"https://yandex.com/images/search?rpt=imageview&url={image_url}")
     elif engine == "tineye":
-        return redirect(f"https://www.tineye.com/search/?url={image_path}")
+        return redirect(f"https://www.tineye.com/search/?url={image_url}")
     elif engine == "pimeyes":
-        return redirect(f"https://pimeyes.com/en/?uploaded_image={image_path}")
+        return redirect(f"https://pimeyes.com/en/?uploaded_image={image_url}")
     else:
         return "Invalid search engine selected"
 
