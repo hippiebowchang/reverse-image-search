@@ -43,23 +43,22 @@ def upload_file():
 
 import requests
 
-IMGUR_CLIENT_ID = "YOUR_IMGUR_CLIENT_ID"  # Replace with your Imgur API Client ID
+IMGBB_API_KEY = "d516255c6bd11f68fb3f02d1983c4351"  
 
-def upload_to_imgur(image_path):
-    headers = {"Authorization": f"Client-ID {IMGUR_CLIENT_ID}"}
+def upload_to_imgbb(image_path):
     with open(image_path, "rb") as image_file:
         response = requests.post(
-            "https://api.imgur.com/3/image",
-            headers=headers,
+            "https://api.imgbb.com/1/upload",
+            data={"key": IMGBB_API_KEY},
             files={"image": image_file},
         )
     if response.status_code == 200:
-        return response.json()["data"]["link"]
+        return response.json()["data"]["url"]
     else:
         return None
 
 def redirect_to_search(image_path, engine):
-    image_url = upload_to_imgur(image_path)
+    image_url = upload_to_imgbb(image_path)
     if not image_url:
         return "Error uploading image. Try again."
 
