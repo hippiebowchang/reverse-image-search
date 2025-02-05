@@ -70,8 +70,10 @@ def redirect_to_search(image_path, engine):
         return redirect(f"https://yandex.com/images/search?rpt=imageview&url={image_url}")
     elif engine == "tineye":
         return redirect(f"https://www.tineye.com/search/?url={image_url}")
-    elif engine == "pimeyes":
-        return redirect(f"https://pimeyes.com/en/?uploaded_image={image_url}")
+    elif engine == "reddit":
+        return redirect(f"https://www.google.com/searchbyimage?image_url={image_url}&as_sitesearch=reddit.com")
+    elif engine == "twitter":
+        return redirect(f"https://www.google.com/searchbyimage?image_url={image_url}&as_sitesearch=twitter.com")
     else:
         return "Invalid search engine selected"
 
