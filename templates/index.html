@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N Image Search</title>
+    <title>Reverse Image & Video Search</title>
 </head>
 <body>
-    <h2>Upload an Image to Search N Sites</h2>
-    <form action="/" method="post" enctype="multipart/form-data">
-        <label>Select Search Engine:</label>
-        <select name="search_engine">
-            {% for key, value in search_engines.items() %}
-                <option value="{{ key }}">{{ key.replace("_", " ").title() }}</option>
-            {% endfor %}
+    <h2>Upload an Image or Video</h2>
+    
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required><br><br>
+
+        <label for="search_engine">Choose a Search Engine:</label>
+        <select name="search_engine" id="search_engine" required>
+            <option value="google">Google</option>
+            <option value="bing">Bing</option>
+            <option value="yandex">Yandex</option>
+            <option value="tineye">TinEye</option>
+            <option value="pimeyes">PimEyes (for faces)</option>
+              <option value="reddit">Reddit</option>
+    <option value="twitter">Twitter</option>
         </select>
         <br><br>
-        <input type="file" name="image" required>
-        <br><br>
+
         <button type="submit">Search</button>
     </form>
 </body>
